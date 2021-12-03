@@ -1,0 +1,214 @@
+<div class="rate">
+              <input type="radio" id="star10_${jsonObj["movieId"]}" name="rate" onclick=getRate(${jsonObj["movieId"]},10) />
+              <label for="star10_${jsonObj["movieId"]}" title="10 stars">10 stars</label>
+
+              <input type="radio" id="star9_${jsonObj["movieId"]}" name="rate" onclick=getRate(${jsonObj["movieId"]},9) />
+              <label for="star9_${jsonObj["movieId"]}" title="9 stars">9 stars</label>
+
+              <input type="radio" id="star8_${jsonObj["movieId"]}" name="rate" onclick=getRate(${jsonObj["movieId"]},8) />
+              <label for="star8_${jsonObj["movieId"]}" title="8 stars">8 stars</label>
+
+              <input type="radio" id="star7_${jsonObj["movieId"]}" name="rate" onclick=getRate(${jsonObj["movieId"]},7) />
+              <label for="star7_${jsonObj["movieId"]}" title="7 stars">7 stars</label>
+
+              <input type="radio" id="star6_${jsonObj["movieId"]}" name="rate" onclick=getRate(${jsonObj["movieId"]},6) />
+              <label for="star6_${jsonObj["movieId"]}" title="6 stars">6 stars</label>
+
+              <input type="radio" id="star5_${jsonObj["movieId"]}" name="rate" onclick=getRate(${jsonObj["movieId"]},5) />
+              <label for="star5_${jsonObj["movieId"]}" title="5 stars">5 stars</label>
+
+              <input type="radio" id="star4_${jsonObj["movieId"]}" name="rate" onclick=getRate(${jsonObj["movieId"]},4) />
+              <label for="star4_${jsonObj["movieId"]}" title="4 stars">4 stars</label>
+
+              <input type="radio" id="star3_${jsonObj["movieId"]}" name="rate"  onclick=getRate(${jsonObj["movieId"]},3) />
+              <label for="star3_${jsonObj["movieId"]}" title="3 stars">3 stars</label>
+
+              <input type="radio" id="star2_${jsonObj["movieId"]}" name="rate" onclick=getRate(${jsonObj["movieId"]},2) />
+              <label for="star2_${jsonObj["movieId"]}" title="2 stars">2 stars</label>
+
+              <input type="radio" id="star1_${jsonObj["movieId"]}" name="rate" onclick=getRate(${jsonObj["movieId"]},1) />
+              <label for="star1_${jsonObj["movieId"]}" title="1 star">1 star</label>
+            </div>
+
+.rate {
+  margin-left: 0;
+  height: 46px;
+  /* padding: 0 396px 10px; */
+  /* margin-top: 10px;*/
+  margin-bottom: 30px;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  left: -310px;
+}
+
+.rate:not(:checked) > input {
+  position:absolute;
+  /* top:-9999px; */
+  display:none;
+}
+
+.rate:not(:checked) > label {
+  float:right;
+  width:1em;
+  overflow:hidden;
+  white-space:nowrap;
+  cursor:pointer;
+  font-size:30px;
+  color:#ccc;
+}
+
+.rate:not(:checked) > label:before {
+  content: '★ ';
+}
+
+.rate > input:checked ~ label {
+  color: #ffc700;  
+  
+}
+
+.rate:not(:checked) > label:hover,
+.rate:not(:checked) > label:hover ~ label {
+  color: #deb217;  
+}
+.rate > input:checked + label:hover,
+.rate > input:checked + label:hover ~ label,
+.rate > input:checked ~ label:hover,
+.rate > input:checked ~ label:hover ~ label,
+.rate > label:hover ~ input:checked ~ label {
+  color: #c59b08;
+}
+
+
+// var div_container = document.createElement("div");
+    // var div_card__container = document.createElement("div");
+    // var div_card = document.createElement("div");
+    // var div_card__content = document.createElement("div");
+    // var div_rate = document.createElement("div");
+    
+    // div_container.className = "container";
+    // div_card__container.className = "card__container";
+    // div_card.className = "card";
+    // div_card__content.className = "card__content";
+    // div_rate.className = "rate";
+
+    // movieContainer.appendChild(div_container);
+    // div_container.appendChild(div_card__container);
+    // div_card__container.appendChild(div_card);
+    // div_card.appendChild(div_card__content);
+    
+    // var h3 = document.createElement("h3");
+    // h3.className = "card__header";
+    // h3.innerHTML = jsonObj["title"];
+    // var p = document.createElement("p");
+    // p.innerHTML = jsonObj["genres"];
+
+    // div_card__content.appendChild(h3);
+    // div_card__content.appendChild(p);
+    // div_card__content.appendChild(div_rate);
+
+    // var input5 = document.createElement("input");
+    // var input4 = document.createElement("input");
+    // var input3 = document.createElement("input");
+    // var input2 = document.createElement("input");
+    // var input1 = document.createElement("input");
+
+    // var label5 = document.createElement("label");
+    // var label4 = document.createElement("label");
+    // var label3 = document.createElement("label");
+    // var label2 = document.createElement("label");
+    // var label1 = document.createElement("label");
+
+    // setAttributes(input5, {"type": "radio", "id": "star5", "name": "rate", "value": "5"});
+    // setAttributes(input4, {"type": "radio", "id": "star4", "name": "rate", "value": "4"});
+    // setAttributes(input3, {"type": "radio", "id": "star3", "name": "rate", "value": "3"});
+    // setAttributes(input2, {"type": "radio", "id": "star2", "name": "rate", "value": "2"});
+    // setAttributes(input1, {"type": "radio", "id": "star1", "name": "rate", "value": "1"});
+    
+    // setAttributes(label5, {"for": "star5", "title": "5 stars", "name": "rate", "value": "5"});
+    // setAttributes(label4, {"for": "star4", "title": "4 stars", "name": "rate", "value": "4"});
+    // setAttributes(label3, {"for": "star3", "title": "3 stars", "name": "rate", "value": "3"});
+    // setAttributes(label2, {"for": "star2", "title": "2 stars", "name": "rate", "value": "2"});
+    // setAttributes(label1, {"for": "star1", "title": "1 star",  "name": "rate", "value": "1"});
+
+    // label5.innerHTML = "5 stars";
+    // label4.innerHTML = "4 stars";
+    // label3.innerHTML = "3 stars";
+    // label2.innerHTML = "2 stars";
+    // label1.innerHTML = "1 stars";
+
+    // div_rate.appendChild(input5);
+    // div_rate.appendChild(label5);
+
+    // div_rate.appendChild(input4);
+    // div_rate.appendChild(label4);
+
+    // div_rate.appendChild(input3);
+    // div_rate.appendChild(label3);
+
+    // div_rate.appendChild(input2);
+    // div_rate.appendChild(label2);
+
+    // div_rate.appendChild(input1);
+    // div_rate.appendChild(label1);
+
+    // var rating = document.querySelector(div_rate);
+    // console.log("you rated " + rating);
+
+
+
+  form.addEventListener("submit", (e) => {
+  e.preventDefault();
+
+  var http = new XMLHttpRequest();
+
+   http.open("POST", movieURL, true);
+   http.setRequestHeader("Content-Type", "application/json");
+
+    http.onreadystatechange = function () {
+     if (http.readyState === 4 && http.status === 200) {
+       var json = JSON.parse(http.responseText);
+      
+       var data = http.responseText;      
+       showMovies(json);
+      
+     }
+   };
+  var jsonString = JSON.stringify({
+    keyword: movieName.value,
+  });
+  http.send(jsonString);
+
+});
+
+
+
+function recommend(){
+  console.log(Object.keys(client));
+  console.log("This is the client array: ");
+  console.log(client);
+  //console.log(Object.values(client));
+
+  // var http = new XMLHttpRequest();
+
+  // http.open("POST", ratingsURL, true);
+  // http.setRequestHeader("Content-Type", "application/json");
+  // http.onreadystatechange = function () {
+  //   if (http.readyState === 4 && http.status === 200) {
+  //     var jsonRating = JSON.parse(http.responseText);
+  //     console.log(jsonRating);
+  //     pearsonCorrelation(jsonRating[0]);
+  //   }
+  // };
+  var ids = [];
+  for (const movieID in client) {
+    ids.push(parseInt(movieID));
+  }
+  var jsonString = JSON.stringify({
+    movieList: ids
+  });
+  fetchJSON(url=ratingsURL,body=jsonString).then(movies => {
+    console.log(movies); // fetched movies
+  });
+  // http.send(jsonString);
+}

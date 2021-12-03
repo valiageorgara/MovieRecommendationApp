@@ -1,0 +1,56 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Movie Recomendations</title>
+    <link rel="stylesheet" href="style.css" />
+    <script type="text/javascript" src="movieapp.js" defer></script>
+    <script type="text/javascript" src="functions.js"></script>
+  </head>
+
+  <body>
+
+    <header class="nav-bar">
+      <div class="nav-logo pull-left">
+        <a href="/"><img src="popcorn.png" /></a>
+      </div>
+      <span class="header-slogan hidden-xs pull-left">
+        Search for movies and rate them!
+      </span>
+    </header>
+
+    <div id="main-search" class="content-dark">
+      <div class="container" id="search_container">
+        <form id="form">
+          <div id="main-search-fields">
+            <p class="pull-left term">Search Term:</p>
+            <input
+              type="text"
+              id="movieName"
+              placeholder="Search"
+              class="search"
+            />
+          </div>
+          <div id="main-search-btn">
+            <input
+              class="button"
+              type="submit"
+              value="Search"
+            />
+          </div>
+          <div id="main-search-btn">
+            <input
+              class="button"
+              type="submit"
+              value="Recommend"
+              onclick="recommend()"
+            />
+          </div>
+        </form>
+      </div>
+    </div>
+     
+  <div id="movies"></div>
+
+  </body>
+</html>

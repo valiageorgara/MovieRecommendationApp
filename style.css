@@ -1,0 +1,226 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: sans-serif;
+}
+body {
+  /* display: flex;
+  flex-direction: column;
+  flex-wrap: wrap; */
+  background: #1d1d1d !important;
+  font-family: Helvetica;
+}
+.nav-logo img {
+  height: 50px;
+  margin-left: 5%;
+}
+
+.nav-bar {
+  margin-right: auto;
+  margin-left: auto;
+  width: 100%;
+  top: 0;
+  position: fixed;
+  z-index: 8;
+  background: #1d1d1d;
+  overflow: hidden;
+  color: #919191;
+  border-bottom: 1px solid #2f2f2f;
+  backface-visibility: hidden;
+}
+
+.nav-logo {
+  margin-left: 0.5%;
+}
+.header-slogan {
+  font-size: 1.2em;
+  margin-left: 2%;
+  margin-top: 15px;
+}
+#main-search {
+  padding: 70px 70px 70px 70px;
+}
+.content-dark {
+  background: #171717;
+  width: 100%;
+}
+#main-search-fields {
+  width: 731px;
+  display: inline-block;
+}
+#main-search-fields .term {
+  margin-bottom: 10px;
+  font-weight: 700;
+  font-size: 1.35em;
+  color: #5a5a5a;
+}
+#main-search-fields input {
+  border: 0;
+  color: #a2a2a2;
+  border-radius: 3px;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  background-image: none;
+  padding: 10px;
+  width: 100%;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  height: 40px;
+  background: #282828;
+}
+
+#main-search-btn {
+  display: inline-block;
+  vertical-align: top;
+  margin-left: 20px;
+  margin-top: 41px;
+}
+
+#main-search-btn input {
+  width: 100px;
+  position: static;
+  border: 0;
+}
+
+.pull-left {
+  float: left !important;
+}
+
+/* button,
+html input[type="button"],
+input[type="reset"],
+input[type="submit"] {
+  -webkit-appearance: button;
+  cursor: pointer;
+}
+input[type="search"] {
+  -webkit-appearance: none;
+} */
+
+.button {
+  background: #6ac045;
+  border-radius: 3px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  display: block;
+  font-weight: 700;
+  color: #fff;
+  top: 35px;
+  font-size: 16px;
+  position: relative;
+  width: 130px;
+  padding: 7px 0;
+  margin: 0 auto;
+  -webkit-transition: all 300ms ease;
+  -moz-transition: all 300ms ease;
+  transition: all 300ms ease;
+}
+
+#search {
+  width: 230px;
+  height: 30px;
+  border: 1px solid black;
+  outline: none;
+  border-radius: 20px;
+  padding-left: 15px;
+}
+
+#search_container {
+  margin-right: auto;
+  margin-left: auto;
+  padding-left: 20%;
+  padding-right: 15px;
+  align-items: center;
+  justify-items: center;
+}
+
+.card {
+  width: 60%;
+  height: 80%;
+  max-height: 300px;
+  padding: auto;
+  text-align: center;
+  background: #242625;
+  border-radius: 10px;
+  box-shadow: 25px 25px 50px #1b1c1b, -25px -25px 50px #2d302f;
+  margin-right: auto;
+  margin-left: auto;
+  min-width: 600px;
+}
+.card__container {
+  display: grid;
+  /* width: 100%;
+  height: 100%; */
+  grid-template-columns: 1fr;
+  align-items: center;
+  justify-items: center;
+  color: white;
+}
+.card__content {
+  width: 90%;
+  height: 95%;
+  background: #191a19;
+  margin: 10px auto;
+  border-radius: 5px;
+  padding: 20px;
+  box-shadow: 16px 16px 44px #0a0a0a, -16px -16px 44px #282a28;
+  transition: 0.3s all ease-in-out;
+}
+
+.card__header {
+  font-size: 20px;
+  margin: 25px auto;
+}
+
+
+.rate {
+  margin-left: 0;
+  height: 46px;
+  /* padding: 0 396px 10px; */
+  /* margin-top: 10px;*/
+  margin-bottom: 30px;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  left: -240px;
+}
+
+.rate:not(:checked) > input {
+  position:absolute;
+  /* top:-9999px; */
+  display:none;
+}
+
+.rate:not(:checked) > label {
+  float:right;
+  width:1em;
+  overflow:hidden;
+  white-space:nowrap;
+  cursor:pointer;
+  font-size:30px;
+  color:#ccc;
+}
+
+.rate:not(:checked) > label:before {
+  content: '★ ';
+}
+
+.rate > input:checked ~ label {
+  color: #ffc700;  
+  
+}
+
+.rate:not(:checked) > label:hover,
+.rate:not(:checked) > label:hover ~ label {
+  color: #deb217;  
+}
+.rate > input:checked + label:hover,
+.rate > input:checked + label:hover ~ label,
+.rate > input:checked ~ label:hover,
+.rate > input:checked ~ label:hover ~ label,
+.rate > label:hover ~ input:checked ~ label {
+  color: #c59b08;
+}
+
