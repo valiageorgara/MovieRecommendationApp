@@ -1,8 +1,13 @@
 function showMovies(data) {
+  console.log('SHOW MOVIES CALLED');
+  console.log(data)
   const movieContainer = document.getElementById("movies");
   movieContainer.innerHTML = "";
   data.forEach((jsonObj) => {
-    
+
+    if(Array.isArray(jsonObj)){
+      jsonObj = jsonObj[0]
+    }
     const content = `
     <div class="container">
       <div class="card__container">
@@ -52,7 +57,7 @@ function showMovies(data) {
   });
 }
 
-async function fetchJSON(url,body) {
+async function fetchJSON(url,body,) {
   const response = await fetch(url,{
     method: 'POST', 
     headers: {
@@ -64,17 +69,29 @@ async function fetchJSON(url,body) {
   return resultJSON;
 }
 
-async function fetchRatingsJSON(movies) {
-  const response = await fetch(ratingsURL,{
-    method: 'POST', // *GET, POST, PUT, DELETE, etc.
+
+async function fetchGETJSON(url) {
+  const response = await fetch(url,{
+    method: 'GET', 
     headers: {
       'Content-Type': 'application/json'
-    },
-    body: movies // body data type must match "Content-Type" header
+    }
   });
-  const ratings = await response.json();
-  return ratings;
+  const resultJSON = await response.json();
+  return resultJSON;
 }
+
+// async function fetchRatingsJSON(movies) {
+//   const response = await fetch(ratingsURL,{
+//     method: 'POST', // *GET, POST, PUT, DELETE, etc.
+//     headers: {
+//       'Content-Type': 'application/json'
+//     },
+//     body: movies // body data type must match "Content-Type" header
+//   });
+//   const ratings = await response.json();
+//   return ratings;
+// }
 
 function setAttributes(element, attributes) {
   for(var key in attributes) {
@@ -102,13 +119,102 @@ function recommend(){
     movieList: movieIDs
   });
   const start = Date.now();
+  let loader = `<div class="loader"></div>`;
+  document.getElementById("movies").innerHTML = loader;
   fetchJSON(url=ratingsURL,body=jsonString).then(movies => {
     console.log(movies);
-    transformData(movies,rates,movieIDs,start);
-    //pearsonCorrelation(new Array(userRates,TODO), 0, 1)
+    allUserData = transformData(movies,rates,movieIDs,start);
+    console.log(allUserData);
+    var user_counter;
+    var users = Object.keys(allUserData);
+    var check = 0;
+    var total = 0;
+    for (user_counter=0;user_counter < users.length;user_counter++){
+      var myuserArray = [];
+      var userArray = [];
+      var noMatch = 0;
+      userID = users[user_counter];
+      userRatings = allUserData[users[user_counter]];
+
+      for (var movieID in client) {
+        myuserArray.push(client[movieID])
+        var flag = true
+        for(var i=0;i<userRatings.length;i++){
+          userMovieID = userRatings[i]['id']
+          if(userMovieID == movieID){
+            userArray.push(userRatings[i]['rating'])
+            flag = false
+            break
+          }
+        }
+        if(flag){
+          userArray.push(2.5)
+          noMatch++;
+        }
+
+
+      }
+    
+      if(noMatch<5){
+        console.log('============================================')
+        console.log(myuserArray,userArray,pearsonCorrelation(new Array(myuserArray,userArray), 0, 1),noMatch)       
+        console.log('============================================')
+        total++
+      }
+      else{
+        check++;
+      }
+      
+    }
+    console.log(total,check);
+
+    var matchedBestUser = 17;
+    return matchedBestUser;
+  }).then(matchedBestUser => {
+    console.log('TO PIRAAAAAAAAAAAAAA')
+    console.log(matchedBestUser)
+    var matchedBestURL = ratingsURL + "/" + matchedBestUser;
+
+    fetchGETJSON(url=matchedBestURL).then(movies => {
+      var top10MoviesIDs = [];
+      movies.sort(GetSortOrder("rating")); 
+      for(var i=0 ; i<movies.length ; i++){
+        console.log(movies[i]);
+        id = movies[i]['movieId'];
+        rate = movies[i]['rating'];
+
+        if (rate >= 4){
+          top10MoviesIDs.push(id);
+        }
+
+        if (top10MoviesIDs.length >= 10){
+          break;
+        }
+  
+      }
+      var top10MoviesData = [];
+      top10MoviesIDs.forEach((obj) => {
+        top10MoviesData.push(fetchGETJSON(url=movieURL + obj));
+      });
+      Promise.all(top10MoviesData).then(data => {
+        showMovies(data)
+      })
+    });
   });
 }
 
+//Comparer Function    
+function GetSortOrder(prop) {    
+  return function(a, b) {    
+      if (a[prop] < b[prop]) {    
+          return 1;    
+      } else if (a[prop] > b[prop]) {    
+          return -1;    
+      }    
+      return 0;    
+  }    
+}    
+  
 function transformData(allData,userRates,movieIdArray,start){
   const start_edit = Date.now();
   allData.sort(function (a, b) {
@@ -131,7 +237,7 @@ function transformData(allData,userRates,movieIdArray,start){
          if (Math.abs(client[movieId] - obj["rating"]) < 1.1){
           matchUsers++;
         }
-        if (matchUsers == 50){
+        if (matchUsers == 150){
           break;
         }
        } else {
@@ -140,7 +246,7 @@ function transformData(allData,userRates,movieIdArray,start){
           if (Math.abs(client[movieId] - obj["rating"]) < 1.1){
             matchUsers++;
           }
-          if (matchUsers == 50){
+          if (matchUsers == 150){
             break;
           }
         }
