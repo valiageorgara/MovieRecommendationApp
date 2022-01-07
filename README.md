@@ -82,33 +82,123 @@ URL: http://62.217.127.19:8010/ratings/{id}
 * popcorn.png
 
 ## Documentation
+
+Ο χρήστης καλείται να πληκτρολογήσει στο search bar, λέξεις-κλειδιά για την αναζήτηση ταινιών και να πατήσει το Search button. 
+
 <a href="https://github.com/othneildrew/Best-README-Template">
     <img src="images\search.png">
 </a>
-```bash
-pip install foobar
+
+Στη συνέχεια, καλείται η συνάρτηση fetchPOSTJSON, η οποία στέλνει μια POST στο API των τανιών και καλέιται η συνάρτηση 
+showMovies, η οποία εμφάνίζει τις ταινίες μέσα σε cards μαζί με το σύστημα rating.
+Έχει επίσης υλοποιηθεί η συνάρτηση fetchGETJSON με λειτουργία αντίστοιχη και μέθοδο την GET, για μετέπειτα χρήση.
+
+<a href="https://github.com/othneildrew/Best-README-Template">
+    <img src="images\showMovies.png">
+</a>
+
+```javascript
+async function fetchPOSTJSON(url,body,) {
+  const response = await fetch(url,{
+    method: 'POST', 
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: body 
+  });
+  const resultJSON = await response.json();
+  return resultJSON;
+}
+
+async function fetchGETJSON(url) {
+  const response = await fetch(url,{
+    method: 'GET', 
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  });
+  const resultJSON = await response.json();
+  return resultJSON;
+}
 ```
 
-## Usage
+Όση ώρα η συνάρτηση κάνει να φέρει αποτελέσματα, εμφανίζεται στην οθόνη ο loader.
 
-```python
-import foobar
-
-# returns 'words'
-foobar.pluralize('word')
-
-# returns 'geese'
-foobar.pluralize('goose')
-
-# returns 'phenomenon'
-foobar.singularize('phenomena')
+```javascript
+let loader = `<div class="loader"></div>`;
+document.getElementById("movies").innerHTML = loader;
 ```
 
-## Contributing
-Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+<a href="https://github.com/othneildrew/Best-README-Template">
+    <img src="images\loader.png">
+</a>
 
-Please make sure to update tests as appropriate.
+Κάθε φορά που βαθμολογεί ο χρήστης μια ταινία, καλέιται η getRate, κατά την οποία, προστίθεται το movieID μαζί με το rating του χρήστη.
 
+```javascript
+function getRate(id,rate) {
+  console.log(id,rate);
+  document.querySelector("#recommendBut").disabled = false;
+  document.getElementById("recommendBut").style.cursor = "pointer";
+  client[id]=rate;
+}
+```
+Όταν ο χρήστης τελειώσει με το searching και το rating, τότε μπορεί να πατήσει το Recommend button ώστε να προβληθούν προτάσεις σχετικές με τις βαθμολογίες του.
+
+Έχει υλοποιηθεί η συνάρτηση shuffle, η οποία επιστρέφει μια λίστα με ανακατεμένα items.
+```javascript
+function shuffle(array) {
+  let currentIndex = array.length,  randomIndex;
+
+  // While there remain elements to shuffle...
+  while (currentIndex != 0) {
+    // Pick a remaining element...
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex--;
+    // And swap it with the current element.
+    [array[currentIndex], array[randomIndex]] = [
+      array[randomIndex], array[currentIndex]];
+  }
+  return array;
+}
+```
+
+Η διαδικασία με την οποία προβάλλονται οι προτάσεις είναι η εξής:
+
+Για κάθε ταινία που βαθμολογεί ο χρήστης επιστρέφονται οι χρήστες που το έχουν βαθμολογήσει. Το πρόγραμμα μόλις βρει 150 άλλους χρήστες οι οποίοι έχουν διαφορά 1 βαθμό από την βαθμολογία που έχει δώσει ο δικός μας χρήστης, σταματάει να κάνει parse άλλους χρήστες. Υποογίζεται το pearson correlation score κάθε χρήστη με τον δικό μας και κρατάμε τον καλύτερο χρήστη. Στη συνέχεια εμφανίζονται οι top 10 ταινίες (με βαθμολογία μεγαλύτερη του 4) αυτού του χρήστη.
+```javascript
+function pearsonCorrelation(prefs, p1, p2) {
+  var si = [];
+
+  for (var key in prefs[p1]) {
+    if (prefs[p2][key]) si.push(key);
+  }
+  var n = si.length;
+  if (n == 0) return 0;
+  var sum1 = 0;
+  for (var i = 0; i < si.length; i++) sum1 += prefs[p1][si[i]];
+  var sum2 = 0;
+  for (var i = 0; i < si.length; i++) sum2 += prefs[p2][si[i]];
+  var sum1Sq = 0;
+  for (var i = 0; i < si.length; i++) {
+    sum1Sq += Math.pow(prefs[p1][si[i]], 2);
+  }
+  var sum2Sq = 0;
+  for (var i = 0; i < si.length; i++) {
+    sum2Sq += Math.pow(prefs[p2][si[i]], 2);
+  }
+  var pSum = 0;
+  for (var i = 0; i < si.length; i++) {
+    pSum += prefs[p1][si[i]] * prefs[p2][si[i]];
+  }
+  var num = pSum - (sum1 * sum2 / n);
+  var den = Math.sqrt((sum1Sq - Math.pow(sum1, 2) / n) *
+      (sum2Sq - Math.pow(sum2, 2) / n));
+
+  if (den == 0) return 0;
+  return num / den;
+}
+```
 ## Acknowledgments
 
 [How to make a movie app in Vanilla Javascript](https://dev.to/abhidevelopssuntech/how-to-make-a-movie-app-in-vanilla-javascript-2336)
@@ -141,3 +231,6 @@ Please make sure to update tests as appropriate.
 
 [Fetch in fetch inside a loop JS](https://stackoverflow.com/questions/60710423/fetch-in-fetch-inside-a-loop-js)
 
+[How to randomize (shuffle) a JavaScript array?](https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array)
+
+[HTMLElement: input event](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/input_event)

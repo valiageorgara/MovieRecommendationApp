@@ -4,8 +4,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Movie Recomendations</title>
     <link rel="stylesheet" href="style.css" />
+
     <script type="text/javascript" src="movieapp.js" defer></script>
     <script type="text/javascript" src="functions.js"></script>
+
   </head>
 
   <body>
@@ -18,7 +20,6 @@
         Search for movies and rate them!
       </span>
     </header>
-
     <div id="main-search" class="content-dark">
       <div class="container" id="search_container">
         <form id="form">
@@ -32,18 +33,25 @@
             />
           </div>
           <div id="main-search-btn">
+            
             <input
+              id="searchBut"
               class="button"
               type="submit"
               value="Search"
+              style="cursor: not-allowed;"
+              disabled
             />
           </div>
           <div id="main-search-btn">
             <input
+              id="recommendBut"
               class="button"
               type="button"
               value="Recommend"
               onclick="recommend()"
+              style="cursor: not-allowed;"
+              disabled
             />
           </div>
         </form>
@@ -53,4 +61,20 @@
   <div id="movies"></div>
 
   </body>
+  <script type="text/javascript">
+    const input = document.getElementById('movieName');
+
+    input.addEventListener('input', check);
+
+    function check(e) {
+      if (e.target.value.length > 2){
+        document.querySelector("#searchBut").disabled = false;
+        document.getElementById("searchBut").style.cursor = "pointer";
+
+      } else {
+        document.querySelector("#searchBut").disabled = true;
+        document.getElementById("searchBut").style.cursor = "not-allowed";
+      }
+    }
+  </script>
 </html>
