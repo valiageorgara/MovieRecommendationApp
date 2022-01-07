@@ -79,7 +79,6 @@ URL: http://62.217.127.19:8010/ratings/{id}
 * movieapp.js
 * functions.js
 * style.css
-* popcorn.png
 
 ## Documentation
 
