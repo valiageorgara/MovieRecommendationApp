@@ -122,8 +122,11 @@ function recommend(){
   let loader = `<div class="loader"></div>`;
   document.getElementById("movies").innerHTML = loader;
   fetchJSON(url=ratingsURL,body=jsonString).then(movies => {
+    matchedBestUser = -1
+    matchedBestUserValue = -1.0
+
     console.log(movies);
-    allUserData = transformData(movies,rates,movieIDs,start);
+    allUserData = transformData(movies,start);
     console.log(allUserData);
     var user_counter;
     var users = Object.keys(allUserData);
@@ -156,9 +159,18 @@ function recommend(){
       }
     
       if(noMatch<5){
-        console.log('============================================')
-        console.log(myuserArray,userArray,pearsonCorrelation(new Array(myuserArray,userArray), 0, 1),noMatch)       
-        console.log('============================================')
+        // console.log('============================================')
+        pearson = pearsonCorrelation(new Array(myuserArray,userArray), 0, 1)
+        total_movies = Object.keys(client).length
+        // console.log('UserID --> ' + userID);
+        // console.log('Local user --> ', myuserArray);
+        // console.log('Other user --> ' , userArray);
+        // console.log('Pearson Result --> ' , pearson)
+        // console.log('Match/Total --> ' , (total_movies-noMatch).toString() + '/' + total_movies.toString())
+        if (pearson > matchedBestUserValue) {
+          matchedBestUser = userID
+          matchedBestUserValue = pearson
+        } 
         total++
       }
       else{
@@ -166,25 +178,37 @@ function recommend(){
       }
       
     }
-    console.log(total,check);
+    // console.log('---------------------------------------')
+    // console.log('total | check');
 
-    var matchedBestUser = 17;
+    // console.log(total,check);
+    console.log('Match User --> ' + matchedBestUser)
+    console.log('Match Value --> ' + matchedBestUserValue)
+    console.log("This is the client array: ");
+    console.log(client);
+  
     return matchedBestUser;
   }).then(matchedBestUser => {
-    console.log('TO PIRAAAAAAAAAAAAAA')
-    console.log(matchedBestUser)
     var matchedBestURL = ratingsURL + "/" + matchedBestUser;
 
     fetchGETJSON(url=matchedBestURL).then(movies => {
+      console.log('RECOMMENDDDDDDD')
+      console.log(Object.keys(client))
+
       var top10MoviesIDs = [];
-      movies.sort(GetSortOrder("rating")); 
+      shuffle(movies);
+      //movies.sort(GetSortOrder("rating")); 
       for(var i=0 ; i<movies.length ; i++){
-        console.log(movies[i]);
         id = movies[i]['movieId'];
         rate = movies[i]['rating'];
-
         if (rate >= 4){
-          top10MoviesIDs.push(id);
+          if (Object.keys(client).includes(id.toString())){
+            console.log('NOT')
+          }else{
+            top10MoviesIDs.push(id);
+            console.log(movies[i],movies[i]['rating'])
+          }
+         
         }
 
         if (top10MoviesIDs.length >= 10){
@@ -203,6 +227,37 @@ function recommend(){
   });
 }
 
+
+function shuffle(array) {
+  let currentIndex = array.length,  randomIndex;
+
+  // While there remain elements to shuffle...
+  while (currentIndex != 0) {
+
+    // Pick a remaining element...
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex--;
+
+    // And swap it with the current element.
+    [array[currentIndex], array[randomIndex]] = [
+      array[randomIndex], array[currentIndex]];
+  }
+
+  return array;
+}
+
+
+
+function test() {
+  console.log(new Array([15,2,7,88,66],[15,2,7,88,66]))
+  //console.log(pearsonCorrelation(new Array([1.2,1.2,1.2],[1.0,1.2,1.0]), 0, 1))
+  console.log(pearsonCorrelation(new Array([4,3,5,4.5,2],[4,3,5,4.5,5]), 0, 1))
+  // console.log(pearsonCorrelation(new Array([1.1,1.,1.1],[1.1,1.,1.1]), 0, 1))
+  // console.log(pearsonCorrelation(new Array([0,0,0],[1,1,1]), 0, 1))
+  // console.log(pearsonCorrelation(new Array([1,1],[1,1,1]), 0, 1))
+
+
+}
 //Comparer Function    
 function GetSortOrder(prop) {    
   return function(a, b) {    
@@ -214,12 +269,28 @@ function GetSortOrder(prop) {
       return 0;    
   }    
 }    
-  
-function transformData(allData,userRates,movieIdArray,start){
+
+
+// takes a json of the form (if i have rate 2 movies):
+// { 
+//  0 : [ {userId:1,,movieiD:358,rating:2} ],
+//  1 : [ {userId:1,,movieiD:467,rating:5},{userId:5,,movieiD:467,rating:3.5},{userId:21,,movieiD:467,rating:2} ]
+// }
+// and trafnsorm it to: userID:[movieid and rating]
+// {
+//   1 : [{id:358, rating:2}, {id:467, rating:5}],
+//   5 : [{id:467, rating:3.5}],
+//   ...
+// }
+function transformData(allData,start){
   const start_edit = Date.now();
+  console.log(allData)
   allData.sort(function (a, b) {
     return a.length - b.length;
   });
+  console.log(allData)
+  console.log(allData.length)
+
   var i;
   var allUserData = {}
   
@@ -230,8 +301,6 @@ function transformData(allData,userRates,movieIdArray,start){
     var matchUsers = 0;
     for(j=0; j<allData[i].length;j++){
       obj = allData[i][j];
-
-      
       if (Object.keys(allUserData).includes(obj["userId"].toString())) {
          allUserData[obj["userId"].toString()].push({id:obj["movieId"],rating:obj["rating"]});
          if (Math.abs(client[movieId] - obj["rating"]) < 1.1){
@@ -258,16 +327,30 @@ function transformData(allData,userRates,movieIdArray,start){
   console.log(end-start);
   console.log(end-start_edit);
   return allUserData
-  //pearsonCorrelation(new Array(userRates,TODO), 0, 1)
 
 }
 
 function pearsonCorrelation(prefs, p1, p2) {
+  // console.log('-------------')
+  // console.log(prefs)
+  // console.log(p1)
+  // console.log(p2)
+  // console.log('-------------')
+
   var si = [];
+  // console.log('.....')
+  // console.log(prefs[p1])
+  // console.log('.....')
 
   for (var key in prefs[p1]) {
     if (prefs[p2][key]) si.push(key);
   }
+  // console.log('.....si array.....')
+
+  // console.log(si)
+
+  // console.log(si.length)
+  // console.log('.....')
 
   var n = si.length;
 
@@ -275,28 +358,60 @@ function pearsonCorrelation(prefs, p1, p2) {
 
   var sum1 = 0;
   for (var i = 0; i < si.length; i++) sum1 += prefs[p1][si[i]];
+  // console.log('.....sum1 array.....')
+
+  // console.log(sum1)
+  // console.log('.....')
 
   var sum2 = 0;
   for (var i = 0; i < si.length; i++) sum2 += prefs[p2][si[i]];
+  // console.log('.....sum2 array.....')
+
+  // console.log(sum2)
+  // console.log('.....')
 
   var sum1Sq = 0;
   for (var i = 0; i < si.length; i++) {
     sum1Sq += Math.pow(prefs[p1][si[i]], 2);
   }
+  // console.log('.....sum1Sq array.....')
+
+  // console.log(sum1Sq)
+  // console.log('.....')
 
   var sum2Sq = 0;
   for (var i = 0; i < si.length; i++) {
     sum2Sq += Math.pow(prefs[p2][si[i]], 2);
   }
+  // console.log('.....sum2Sq array.....')
+
+  // console.log(sum2Sq)
+  // console.log('.....')
 
   var pSum = 0;
   for (var i = 0; i < si.length; i++) {
     pSum += prefs[p1][si[i]] * prefs[p2][si[i]];
   }
 
+  // console.log('.....pSum array.....')
+
+  // console.log(pSum)
+  // console.log('.....')
+
+
+
   var num = pSum - (sum1 * sum2 / n);
   var den = Math.sqrt((sum1Sq - Math.pow(sum1, 2) / n) *
       (sum2Sq - Math.pow(sum2, 2) / n));
+  // console.log('.....num array.....')
+
+  // console.log(num)
+  // console.log('.....')
+
+  // console.log('.....den array.....')
+
+  // console.log(den)
+  // console.log('.....')
 
   if (den == 0) return 0;
 
